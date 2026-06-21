@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"sync"
 
-	ppzModel "github.com/armylong/armylong-go/internal/model/ppz"
 	userModel "github.com/armylong/armylong-go/internal/model/user"
 )
 
@@ -18,8 +17,7 @@ type DataFetcher func(ctx context.Context, uid int64) (interface{}, error)
 
 // 数据拉取器注册表
 var dataFetchers = map[string]DataFetcher{
-	"user":     fetchUserData,
-	"ppz_user": fetchPpzUserData,
+	"user": fetchUserData,
 }
 
 // 按key列表并发拉取会话数据
@@ -63,13 +61,4 @@ func fetchUserData(ctx context.Context, uid int64) (interface{}, error) {
 	}
 	u.ClearPassword()
 	return u, nil
-}
-
-// 拉取拼拼坐用户信息
-func fetchPpzUserData(ctx context.Context, uid int64) (interface{}, error) {
-	ppzUser, err := ppzModel.TbPpzUserModel.GetOrCreateByUid(uid)
-	if err != nil {
-		return nil, fmt.Errorf("获取拼拼坐用户信息失败: %w", err)
-	}
-	return ppzUser, nil
 }
